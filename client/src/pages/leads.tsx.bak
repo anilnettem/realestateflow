@@ -1,0 +1,47 @@
+﻿import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchLeads, createLead } from '../store/leadsSlice';
+import { useRouter } from 'next/router';
+
+export default function LeadsPage() {
+  const dispatch = useAppDispatch();
+  const { items, loading } = useAppSelector((s) => s.leads);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+      router.push('/auth/login');
+      return;
+    }
+    dispatch(fetchLeads());
+  }, [dispatch, router]);
+
+  const handleCreate = async () => {
+    await dispatch(createLead({ name, phone }));
+    setName(''); setPhone('');
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Leads</h1>
+      <div className="mb-4">
+        <input className="border p-2 mr-2" placeholder="Name" value={name} onChange={(e)=>setName(e.target.value)} />
+        <input className="border p-2 mr-2" placeholder="Phone" value={phone} onChange={(e)=>setPhone(e.target.value)} />
+        <button onClick={handleCreate} className="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
+      </div>
+      {loading ? <div>Loading...</div> : (
+        <ul>
+          {items.map((l) => (
+            <li key={l.id} className="border p-3 mb-2">
+              <div className="font-medium">{l.name}</div>
+              <div className="text-sm text-gray-600">{l.phone}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

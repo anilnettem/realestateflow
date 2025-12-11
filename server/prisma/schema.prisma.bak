@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  phone      String?  @unique
+  password   String
+  role       String   @default("user")
+  createdAt  DateTime @default(now())
+  leads      Lead[]
+  properties Property[]
+}
+
+model Property {
+  id          String   @id @default(uuid())
+  ownerId     String?
+  owner       User?    @relation(fields: [ownerId], references: [id])
+  title       String
+  price       Float?
+  address     String?
+  images      Json?
+  brochureUrl String?
+  createdAt   DateTime @default(now())
+}
+
+model Lead {
+  id            String   @id @default(uuid())
+  ownerId       String?
+  owner         User?    @relation(fields: [ownerId], references: [id])
+  name          String?
+  phone         String?
+  email         String?
+  source        String?
+  status        String   @default("new")
+  propertyId    String?
+  property      Property? @relation(fields: [propertyId], references: [id])
+  lastContacted DateTime?
+  createdAt     DateTime @default(now())
+}

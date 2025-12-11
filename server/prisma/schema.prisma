@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  phone      String?    @unique
+  password   String
+  role       String     @default("user")
+  createdAt  DateTime   @default(now())
+  leads      Lead[]
+  properties Property[]
+}
+
+model Property {
+  id          String   @id @default(uuid())
+  ownerId     String?
+  title       String
+  price       Float?
+  address     String?
+  images      Json?
+  brochureUrl String?
+  createdAt   DateTime @default(now())
+  leads       Lead[]
+  owner       User?    @relation(fields: [ownerId], references: [id])
+
+  @@index([ownerId], map: "Property_ownerId_fkey")
+}
+
+model Lead {
+  id            String    @id @default(uuid())
+  ownerId       String?
+  name          String?
+  phone         String?
+  email         String?
+  source        String?
+  status        String    @default("new")
+  propertyId    String?
+  lastContacted DateTime?
+  createdAt     DateTime  @default(now())
+  owner         User?     @relation(fields: [ownerId], references: [id])
+  property      Property? @relation(fields: [propertyId], references: [id])
+
+  @@index([ownerId], map: "Lead_ownerId_fkey")
+  @@index([propertyId], map: "Lead_propertyId_fkey")
+}

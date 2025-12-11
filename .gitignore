@@ -1,8 +1,28 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+########################################
+# Global ignores (OS / editor trash)
+########################################
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
 
-# dependencies
-/node_modules
-/.pnp
+########################################
+# Node.js / Yarn / pnpm / npm
+########################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnpm-store/
+.tmp/
+
+########################################
+# Monorepo / Workspace package managers
+########################################
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -10,32 +30,64 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+########################################
+# Environment files
+########################################
+.env
+.env.*
+!.env.example
 
-# next.js
-/.next/
-/out/
+########################################
+# Client (Next.js)
+########################################
+client/.next/
+client/out/
+client/.turbo/
+client/next-env.d.ts
+client/*.tsbuildinfo
+client/next-dev-*.txt
 
-# production
-/build
+########################################
+# Server (Node + TypeScript + Prisma)
+########################################
+server/dist/
+server/build/
+server/*.tsbuildinfo
+server/prisma/dev.db
+server/prisma/dev.db-journal
+server/prisma/*.sqlite
+server/prisma/migrations/*_shadow/
+server/node_modules/
 
-# misc
-.DS_Store
+########################################
+# Prisma generated files
+########################################
+server/prisma/generated/
+server/node_modules/.prisma/
+
+########################################
+# Coverage / Testing
+########################################
+coverage/
+client/coverage/
+server/coverage/
+
+########################################
+# Vercel
+########################################
+.vercel/
+
+########################################
+# Docker
+########################################
+docker/data/
+docker/mysql/
+docker-compose.override.yml
+
+########################################
+# Misc project output
+########################################
 *.pem
+*.key
+*.crt
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
