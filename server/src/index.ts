@@ -2,8 +2,10 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import authRouter from "./routes/auth";
-import leadsRouter from "./routes/leads";
+import authRouter from "./routes/auth.ts";
+import leadsRouter from "./routes/leads.ts";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.ts";
 
 dotenv.config();
 const app = express();
@@ -18,5 +20,13 @@ app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/leads", leadsRouter);
 
+app.get("/api/docs.json", (_req, res) => {
+  res.json(swaggerSpec);
+});
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Swagger UI -> http://localhost:${port}/api/docs`);
+});

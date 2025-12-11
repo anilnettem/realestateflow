@@ -91,3 +91,4 @@ docker-compose.override.yml
 *.key
 *.crt
 
+server/package-lock.json
